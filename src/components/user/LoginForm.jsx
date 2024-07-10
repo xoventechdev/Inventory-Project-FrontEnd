@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { IsEmail, IsEmpty, ErrorToast } from "../../utility/FormHelper";
+import { LogInRequest } from "../../api_request/UserApiRequest";
+import { ToastContainer } from "react-toastify";
 
 const LoginForm = () => {
   let emailRef,
@@ -14,14 +16,11 @@ const LoginForm = () => {
     } else if (IsEmail(email)) {
       ErrorToast("Please enter a valid email");
     } else {
-      // LogInRequest({
-      //   email: email,
-      //   password: password,
-      // }).then((res) => {
-      //   if (res) {
-      //     window.location.href = "/";
-      //   }
-      // });
+      LogInRequest(email, password).then((res) => {
+        if (res) {
+          window.location.href = "/";
+        }
+      });
     }
   };
   return (
@@ -58,14 +57,14 @@ const LoginForm = () => {
                 <span>
                   <Link
                     className="text-center ms-3 h6 animated fadeInUp"
-                    to="/Registration"
+                    to="/registration"
                   >
                     Sign Up{" "}
                   </Link>
                   <span className="ms-1">|</span>
                   <Link
                     className="text-center ms-3 h6 animated fadeInUp"
-                    to="/password-reset"
+                    to="/recover-password"
                   >
                     Forget Password
                   </Link>
