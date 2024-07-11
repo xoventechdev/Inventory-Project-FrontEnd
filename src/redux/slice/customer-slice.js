@@ -22,8 +22,7 @@ export const customerSlice = createSlice({
       state.totals = action.payload;
     },
     setFormValues: (state, action) => {
-      const { name, value } = action.payload;
-      state.formValues[name] = value;
+      state.formValues = { ...state.formValues, ...action.payload };
     },
     resetFormValues: (state) => {
       state.formValues = {

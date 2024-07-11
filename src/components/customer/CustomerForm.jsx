@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import ReduxStore from "../../redux/store/ReduxStore";
 import {
@@ -7,14 +7,29 @@ import {
 } from "../../redux/slice/customer-slice";
 import { ErrorToast, IsEmail, IsEmpty } from "../../utility/FormHelper";
 import { ToastContainer } from "react-toastify";
-import { AddCustomer } from "../../api_request/CustomerApiRequest";
+import {
+  AddCustomer,
+  CustomerDetailById,
+} from "../../api_request/CustomerApiRequest";
+import { useParams } from "react-router-dom";
 
 const CustomerForm = () => {
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      (async () => {
+        await CustomerDetailById(id);
+      })();
+    } else {
+      ReduxStore.dispatch(resetFormValues());
+    }
+  }, [id]);
+
   const formData = useSelector((state) => state.customer.formValues);
   const onChangeHandler = (e) => {
-    ReduxStore.dispatch(
-      setFormValues({ name: e.target.name, value: e.target.value })
-    );
+    const { name, value } = e.target;
+    ReduxStore.dispatch(setFormValues({ [name]: value }));
   };
 
   const saveTo = () => {
@@ -28,9 +43,7 @@ const CustomerForm = () => {
     } else if (IsEmpty(address)) {
       ErrorToast("Please enter a address");
     } else {
-      AddCustomer(formData).then((res) => {
-        ReduxStore.dispatch(resetFormValues());
-      });
+      AddCustomer(formData, id);
     }
   };
   return (
@@ -40,7 +53,7 @@ const CustomerForm = () => {
           <div className="card">
             <div className="card-body">
               <div className="row">
-                <h5>Add Customer</h5>
+                {id ? <h5>Update Customer</h5> : <h5>Add Customer</h5>}
                 <ToastContainer />
                 <hr className="bg-light" />
 
@@ -121,7 +134,7 @@ const CustomerForm = () => {
                     onClick={saveTo}
                     className="btn btn-sm my-3 btn-success"
                   >
-                    Add New
+                    {id ? "Update Customer" : "Add Customer"}
                   </button>
                 </div>
               </div>
