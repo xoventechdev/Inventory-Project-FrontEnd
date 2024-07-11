@@ -11,10 +11,11 @@ import {
   AddCustomer,
   CustomerDetailById,
 } from "../../api_request/CustomerApiRequest";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CustomerForm = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -43,7 +44,11 @@ const CustomerForm = () => {
     } else if (IsEmpty(address)) {
       ErrorToast("Please enter a address");
     } else {
-      AddCustomer(formData, id);
+      AddCustomer(formData, id).then((res) => {
+        if (res == 2) {
+          navigate("/customer");
+        }
+      });
     }
   };
   return (

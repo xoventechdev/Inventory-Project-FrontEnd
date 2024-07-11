@@ -26,13 +26,17 @@ export const AddCustomer = (data, id) => {
       if (res.status === 200 && res.data.status === "success") {
         SuccessToast(res.data.response);
         ReduxStore.dispatch(resetFormValues());
-        return true;
+        if (id) {
+          return 2;
+        } else {
+          return 1;
+        }
       } else if (res.data.response.keyPattern.mobile === 1) {
         ErrorToast("This mobile number registered with another customer.");
-        return false;
+        return 0;
       } else {
         ErrorToast(res.data.response);
-        return false;
+        return 0;
       }
     })
     .catch((error) => {
@@ -43,7 +47,7 @@ export const AddCustomer = (data, id) => {
       } else {
         ErrorToast(error.response?.data?.response || "An error occurred");
       }
-      return false;
+      return 0;
     });
 };
 
