@@ -15,19 +15,40 @@ const CustomerList = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [searchKey, setSearchKey] = useState("0");
+  const [textFilter, setTextFilter] = useState("");
   useEffect(() => {
     (async () => {
       await CustomerListRequest(page, perPage, searchKey);
     })();
   }, []);
 
+  const filteredItem = React.useMemo(() => {
+    if (textFilter === "") {
+      return tableItem;
+    } else {
+      return tableItem.filter(
+        (item) =>
+          item.name.toLowerCase().includes(textFilter.toLowerCase()) ||
+          item.mobile.toLowerCase().includes(textFilter.toLowerCase()) ||
+          item.email.toLowerCase().includes(textFilter.toLowerCase())
+      );
+    }
+  });
+
   const perPageChange = async (e) => {
     setPerPage(parseInt(e.target.value));
     await CustomerListRequest(page, e.target.value, searchKey);
   };
 
-  const searchKeyChange = async (e) => {
+  const searchKeyChange = async () => {
     await CustomerListRequest(page, perPage, searchKey);
+  };
+
+  const searchOnChange = async (e) => {
+    setSearchKey(e.target.value);
+    if (e.target.value.length === 0) {
+      setSearchKey("0");
+    }
   };
 
   const paginateOnChange = async (e) => {
@@ -67,7 +88,8 @@ const CustomerList = () => {
 
                   <div className="col-2">
                     <input
-                      placeholder="Text Filter"
+                      onChange={(e) => setTextFilter(e.target.value)}
+                      placeholder="Text Filter in page"
                       className="form-control form-control-sm"
                     />
                   </div>
@@ -87,7 +109,7 @@ const CustomerList = () => {
                   <div className="col-4">
                     <div className="input-group mb-3">
                       <input
-                        onChange={(e) => setSearchKey(e.target.value)}
+                        onChange={(e) => searchOnChange(e)}
                         type="text"
                         className="form-control form-control-sm"
                         placeholder="Search.."
@@ -129,8 +151,8 @@ const CustomerList = () => {
                         </thead>
                         <tbody>
                           {(() => {
-                            if (tableItem.length > 0) {
-                              return tableItem.map((item, i) => (
+                            if (filteredItem.length > 0) {
+                              return filteredItem.map((item, i) => (
                                 <tr key={i}>
                                   <td>
                                     <p className="text-xs text-start">

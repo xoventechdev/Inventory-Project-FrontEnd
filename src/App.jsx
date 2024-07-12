@@ -33,6 +33,7 @@ import PasswordResetPage from "./pages/user/PasswordResetPage";
 import NotFoundPage from "./pages/notFound/NotFoundPage";
 import { useSelector } from "react-redux";
 import { getToken } from "./utility/SessionHelper";
+import FullscreenLoader from "./components/masterLayout/FullscreenLoader";
 
 function App() {
   const recoverMode = useSelector((state) => state.settings.recoverMode);
@@ -140,6 +141,7 @@ function App() {
             <Route exact path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
+        <FullscreenLoader />
       </>
     );
   } else {
@@ -175,6 +177,7 @@ function App() {
             <Route exact path="*" element={<Navigate to={"/login"} />} />
           </Routes>
         </BrowserRouter>
+        <FullscreenLoader />
       </>
     );
   }
