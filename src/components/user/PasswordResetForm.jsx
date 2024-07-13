@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { getEmail } from "../../../utility/SessionHelper";
+import { getEmail } from "../../utility/SessionHelper";
 import { ErrorToast, IsEmpty, SuccessToast } from "../../utility/FormHelper";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
