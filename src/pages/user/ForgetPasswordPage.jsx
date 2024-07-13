@@ -1,7 +1,17 @@
-import React from "react";
+import React, { Suspense } from "react";
+import LazyLoader from "../../components/masterLayout/LazyLoader";
+const ForgetPasswordRequest = React.lazy(() =>
+  import("../../components/user/ForgetPasswordRequest")
+);
 
 const ForgetPasswordPage = () => {
-  return <div></div>;
+  return (
+    <>
+      <Suspense fallback={<LazyLoader />}>
+        <ForgetPasswordRequest />
+      </Suspense>
+    </>
+  );
 };
 
 export default ForgetPasswordPage;

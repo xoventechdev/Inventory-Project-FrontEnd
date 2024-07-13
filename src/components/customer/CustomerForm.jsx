@@ -42,7 +42,7 @@ const CustomerForm = () => {
     } else if (IsEmail(email)) {
       ErrorToast("Please enter a email");
     } else if (IsEmpty(address)) {
-      ErrorToast("Please enter a address");
+      ErrorToast("Please enter an address");
     } else {
       AddCustomer(formData, id).then((res) => {
         if (res == 2) {
@@ -110,7 +110,7 @@ const CustomerForm = () => {
                   <div className="col-6 p-2">
                     <label className="form-label">Status </label>
                     <select
-                      value={formData.status}
+                      value={formData.status === "" ? "1" : formData.status}
                       name="status"
                       onChange={onChangeHandler}
                       className="form-control form-control-sm"

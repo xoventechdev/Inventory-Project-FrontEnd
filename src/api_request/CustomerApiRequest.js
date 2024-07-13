@@ -21,7 +21,6 @@ export const AddCustomer = (data, id) => {
   return axios
     .post(URL, data, reqHeaders)
     .then((res) => {
-      console.log(res);
       ReduxStore.dispatch(HideLoader());
       if (res.status === 200 && res.data.status === "success") {
         SuccessToast(res.data.response);

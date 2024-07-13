@@ -15,18 +15,7 @@ const BrandListPage = () => {
   return (
     <MasterLayout>
       <Suspense fallback={<LazyLoader />}>
-        <div className="card">
-          <div className="card-body text-dark-emphasis">
-            <h2 className="card-title text-primary">Brand List</h2>
-            <div className="d-flex justify-content-end mt-3 py-3">
-              {/* <FilterOptions />
-                  <SearchItem /> */}
-            </div>
-
-            <BrandList />
-            {/* <PagePagination /> */}
-          </div>
-        </div>
+        <BrandList />
       </Suspense>
     </MasterLayout>
   );

@@ -7,12 +7,13 @@ import {
   AiOutlineMenu,
   AiOutlineUser,
 } from "react-icons/ai";
+import { VscGraph } from "react-icons/vsc";
+
 import {
   BsBagPlus,
   BsBagX,
   BsBox,
   BsCartPlus,
-  BsCircle,
   BsGraphUp,
   BsPeople,
 } from "react-icons/bs";
@@ -22,12 +23,15 @@ import { AiOutlineUnorderedList } from "react-icons/ai";
 import { RiDashboardLine } from "react-icons/ri";
 import { TbTruckDelivery } from "react-icons/tb";
 
-import logo from "../../assets/img/react.svg";
+import logo from "../../assets/img/inventory.png";
 import { getUserDetails, removeSessions } from "../../utility/SessionHelper";
+import { useSelector } from "react-redux";
 const MasterLayout = (props) => {
   let contentRef,
     sideNavRef,
     topNavRef = useRef();
+
+  const userInfo = getUserDetails();
 
   const MenuBarClickHandler = () => {
     let sideNav = sideNavRef;
@@ -78,12 +82,17 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Customer List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/customer",
         },
         {
           title: "New Customer",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/customer/new",
         },
       ],
@@ -95,12 +104,17 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Supplier List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/supplier",
         },
         {
           title: "New Supplier",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/supplier/new",
         },
       ],
@@ -149,32 +163,47 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Product List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/product",
         },
         {
           title: "Brand List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/brand",
         },
         {
           title: "Category List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/category",
         },
         {
           title: "New Product",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/product/new",
         },
         {
           title: "New Brand",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/brand/new",
         },
         {
           title: "New Category",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/category/new",
         },
       ],
@@ -186,12 +215,17 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Purchase List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/purchase",
         },
         {
           title: "New Purchase",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/purchase/new",
         },
       ],
@@ -203,12 +237,17 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Sale List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/sale",
         },
         {
           title: "New Sale",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/sale/new",
         },
       ],
@@ -220,12 +259,17 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Return List",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: (
+            <AiOutlineUnorderedList
+              size={16}
+              className="side-bar-subitem-icon"
+            />
+          ),
           url: "/return",
         },
         {
           title: "New Return",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <IoCreateOutline size={16} className="side-bar-subitem-icon" />,
           url: "/return/new",
         },
       ],
@@ -237,22 +281,22 @@ const MasterLayout = (props) => {
       subMenu: [
         {
           title: "Sale Report",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <VscGraph size={16} className="side-bar-subitem-icon" />,
           url: "/report/sale",
         },
         {
           title: "Return Report",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <VscGraph size={16} className="side-bar-subitem-icon" />,
           url: "/report/return",
         },
         {
           title: "Purchase Report",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <VscGraph size={16} className="side-bar-subitem-icon" />,
           url: "/report/purchase",
         },
         {
           title: "Expense Report",
-          icon: <BsCircle size={16} className="side-bar-subitem-icon" />,
+          icon: <VscGraph size={16} className="side-bar-subitem-icon" />,
           url: "/report/expense",
         },
       ],
@@ -285,17 +329,13 @@ const MasterLayout = (props) => {
             <div className="user-dropdown">
               <img
                 className="icon-nav-img icon-nav"
-                src={getUserDetails()["photo"]}
+                src={userInfo.photo}
                 alt=""
               />
               <div className="user-dropdown-content ">
                 <div className="mt-4 text-center">
-                  <img
-                    className="icon-nav-img"
-                    src={getUserDetails()["photo"]}
-                    alt=""
-                  />
-                  <h6>{getUserDetails()["firstName"]}</h6>
+                  <img className="icon-nav-img" src={userInfo.photo} alt="" />
+                  <h6>{userInfo.firstName}</h6>
                   <hr className="user-dropdown-divider  p-0" />
                 </div>
                 <NavLink to="/Profile" className="side-bar-item">
@@ -323,7 +363,7 @@ const MasterLayout = (props) => {
           end
           className="d-flex justify-content-center sticky-top bg-white"
         >
-          <img src="./inventory.png" className="logo w-15" />
+          <img src={logo} className="logo w-15" />
         </NavLink>
 
         <Accordion defaultActiveKey={`${isSidebarAccordionActive()}`}>
