@@ -31,7 +31,10 @@ const MasterLayout = (props) => {
     sideNavRef,
     topNavRef = useRef();
 
-  const userInfo = getUserDetails();
+  let userInfo = useSelector((state) => state.user.value);
+  if (!userInfo || userInfo.length === 0) {
+    userInfo = getUserDetails();
+  }
 
   const MenuBarClickHandler = () => {
     let sideNav = sideNavRef;

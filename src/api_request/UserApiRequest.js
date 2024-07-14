@@ -50,6 +50,7 @@ export const LogInRequest = (email, password) => {
       ReduxStore.dispatch(HideLoader());
       if (res.status === 200 && res.data.status === "success") {
         setToken(res.data.token);
+        ReduxStore.dispatch(setUserDetail(res.data.response));
         setUserDetails(res.data.response);
         return true;
       } else {
@@ -117,6 +118,7 @@ export const UserProfileUpdate = (
       ReduxStore.dispatch(HideLoader());
       if (res.status === 200 && res.data.status === "success") {
         const { password, ...dataForBrowser } = postData;
+        ReduxStore.dispatch(setUserDetail(dataForBrowser));
         setUserDetails(dataForBrowser);
         SuccessToast(res.data.response);
         return true;
