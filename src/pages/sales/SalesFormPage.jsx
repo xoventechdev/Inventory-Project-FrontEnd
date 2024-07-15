@@ -1,15 +1,13 @@
 import React, { Suspense } from "react";
 import MasterLayout from "../../components/masterLayout/MasterLayout";
 import LazyLoader from "../../components/masterLayout/LazyLoader";
-const CustomerList = React.lazy(() =>
-  import("../../components/customer/CustomerList")
-);
+const SalesForm = React.lazy(() => import("../../components/sales/SalesForm"));
 
 const SalesFormPage = () => {
   return (
     <MasterLayout>
       <Suspense fallback={<LazyLoader />}>
-        <CustomerList />
+        <SalesForm />
       </Suspense>
     </MasterLayout>
   );
