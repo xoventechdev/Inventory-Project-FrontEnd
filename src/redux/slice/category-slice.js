@@ -1,24 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const customerSlice = createSlice({
-  name: "customer",
+export const categorySlice = createSlice({
+  name: "category",
   initialState: {
     items: [],
     totals: 0,
     formValues: {
       name: "",
-      mobile: "",
-      email: "",
-      address: "",
       photo: "",
       status: 1,
     },
   },
   reducers: {
-    setCustomerItem: (state, action) => {
+    setCategoryItem: (state, action) => {
       state.items = action.payload;
     },
-    setTotalCustomer: (state, action) => {
+    setTotalCategory: (state, action) => {
       state.totals = action.payload;
     },
     setFormValues: (state, action) => {
@@ -27,9 +24,6 @@ export const customerSlice = createSlice({
     resetFormValues: (state) => {
       state.formValues = {
         name: "",
-        mobile: "",
-        email: "",
-        address: "",
         photo: "",
         status: 1,
       };
@@ -38,9 +32,9 @@ export const customerSlice = createSlice({
 });
 
 export const {
-  setCustomerItem,
-  setTotalCustomer,
+  setCategoryItem,
+  setTotalCategory,
   setFormValues,
   resetFormValues,
-} = customerSlice.actions;
-export default customerSlice.reducer;
+} = categorySlice.actions;
+export default categorySlice.reducer;

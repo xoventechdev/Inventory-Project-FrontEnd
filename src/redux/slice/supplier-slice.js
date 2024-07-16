@@ -31,7 +31,7 @@ export const supplierSlice = createSlice({
         email: "",
         address: "",
         photo: "",
-        status: "",
+        status: 1,
       };
     },
   },
