@@ -7,12 +7,9 @@ export const brandSlice = createSlice({
     totals: 0,
     formValues: {
       name: "",
-      image: "",
-      state: 1,
+      photo: "",
+      status: 1,
     },
-    perPage: 5,
-    searchKeyword: "0",
-    pageNumber: 1,
   },
   reducers: {
     setBrandItem: (state, action) => {
@@ -22,32 +19,18 @@ export const brandSlice = createSlice({
       state.totals = action.payload;
     },
     setFormValues: (state, action) => {
-      const { name, value } = action.payload;
-      state.formValues[name] = value;
+      state.formValues = { ...state.formValues, ...action.payload };
     },
     resetFormValues: (state) => {
       state.formValues = {
         name: "",
+        photo: "",
+        status: 1,
       };
-    },
-    setPerPage: (state, action) => {
-      state.perPage = action.payload;
-    },
-    setSearchKeyword: (state, action) => {
-      state.searchKeyword = action.payload;
-    },
-    setPageNumber: (state, action) => {
-      state.pageNumber = action.payload;
     },
   },
 });
 
-export const {
-  setBrandItem,
-  setTotalBrand,
-  setFormValues,
-  resetFormValues,
-  setPerPage,
-  setPageNumber,
-} = brandSlice.actions;
+export const { setBrandItem, setTotalBrand, setFormValues, resetFormValues } =
+  brandSlice.actions;
 export default brandSlice.reducer;

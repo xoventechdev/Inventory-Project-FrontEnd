@@ -14,13 +14,12 @@ import {
 const CategoryList = () => {
   const tableItem = useSelector((state) => state.category.items);
   const totalItem = useSelector((state) => state.category.totals);
-  const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [searchKey, setSearchKey] = useState("0");
   const [textFilter, setTextFilter] = useState("");
   useEffect(() => {
     (async () => {
-      await CategoryListRequest(page, perPage, searchKey);
+      await CategoryListRequest(1, perPage, searchKey);
     })();
   }, []);
 
@@ -36,11 +35,11 @@ const CategoryList = () => {
 
   const perPageChange = async (e) => {
     setPerPage(parseInt(e.target.value));
-    await CategoryListRequest(page, e.target.value, searchKey);
+    await CategoryListRequest(1, e.target.value, searchKey);
   };
 
   const searchKeyChange = async () => {
-    await CategoryListRequest(page, perPage, searchKey);
+    await CategoryListRequest(1, perPage, searchKey);
   };
 
   const searchOnChange = async (e) => {
@@ -66,7 +65,7 @@ const CategoryList = () => {
       if (result.isConfirmed) {
         return CategoryDeleteRequest(id).then(async (res) => {
           if (res) {
-            await CategoryListRequest(page, perPage, searchKey);
+            await CategoryListRequest(1, perPage, searchKey);
           }
         });
       }
@@ -85,7 +84,7 @@ const CategoryList = () => {
       if (result.isConfirmed) {
         return CategoryStatusChange(id).then(async (res) => {
           if (res) {
-            await CategoryListRequest(page, perPage, searchKey);
+            await CategoryListRequest(1, perPage, searchKey);
           }
         });
       }

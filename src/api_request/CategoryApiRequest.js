@@ -133,9 +133,7 @@ export const CategoryStatusChange = async (id) => {
   const url = BaseUrl + "category/statusUpdate/" + id;
 
   try {
-    const data = await axios.put(url, reqHeaders);
-    console.log(data);
-
+    const data = await axios.get(url, reqHeaders);
     ReduxStore.dispatch(HideLoader());
     if (data.data.status == "success") {
       SuccessToast(data.data.response);
@@ -146,13 +144,11 @@ export const CategoryStatusChange = async (id) => {
     }
   } catch (error) {
     ReduxStore.dispatch(HideLoader());
-    ErrorToast(error);
-    console.log(error);
-    // if (error.response && error.response.status === 401) {
-    //   ErrorToast("Unauthorized. Please log in again.");
-    //   removeSessions();
-    // } else {
-    //   ErrorToast(error.response?.data?.response || "An error occurred");
-    // }
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
   }
 };
