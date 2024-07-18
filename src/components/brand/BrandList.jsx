@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Link } from "react-router-dom";
@@ -10,7 +10,6 @@ import {
   BrandListRequest,
   BrandStatusChange,
 } from "../../api_request/BrandApiRequest";
-import { CategoryListRequest } from "../../api_request/CategoryApiRequest";
 
 const BrandList = () => {
   const tableItem = useSelector((state) => state.brand.items);
@@ -18,12 +17,28 @@ const BrandList = () => {
   const [perPage, setPerPage] = useState(5);
   const [searchKey, setSearchKey] = useState("0");
   const [textFilter, setTextFilter] = useState("");
+
+  // useEffect(() => {
+  //   (async () => {
+  //     console.log(perPage + " $ " + searchKey);
+  //     await BrandListRequest(1, perPage, searchKey);
+  //   })();
+  // }, []);
+
+  const loadBrandList = useCallback(
+    async (page = 1) => {
+      try {
+        await BrandListRequest(page, perPage, searchKey);
+      } catch (error) {
+        console.error("Error loading brand list:", error);
+      }
+    },
+    [perPage, searchKey]
+  );
+
   useEffect(() => {
-    (async () => {
-      console.log(perPage + " $ " + searchKey);
-      await BrandListRequest(1, perPage, searchKey);
-    })();
-  }, []);
+    loadBrandList();
+  }, [loadBrandList, perPage, searchKey]);
 
   const filteredItem = React.useMemo(() => {
     if (textFilter === "") {

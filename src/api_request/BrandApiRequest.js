@@ -47,9 +47,10 @@ export const AddBrand = (data, id) => {
     });
 };
 
-export const BrandListRequest = async (page, perPage, key) => {
+export const BrandListRequest = async (page, perPage, searchKey) => {
   ReduxStore.dispatch(ShowLoader());
-  const url = BaseUrl + "brand/tableList/" + page + "/" + perPage + "/" + key;
+  const url =
+    BaseUrl + "brand/tableList/" + page + "/" + perPage + "/" + searchKey;
 
   try {
     const data = await axios.get(url, reqHeaders);
