@@ -18,27 +18,27 @@ const BrandList = () => {
   const [searchKey, setSearchKey] = useState("0");
   const [textFilter, setTextFilter] = useState("");
 
-  // useEffect(() => {
-  //   (async () => {
-  //     console.log(perPage + " $ " + searchKey);
-  //     await BrandListRequest(1, perPage, searchKey);
-  //   })();
-  // }, []);
-
-  const loadBrandList = useCallback(
-    async (page = 1) => {
-      try {
-        await BrandListRequest(page, perPage, searchKey);
-      } catch (error) {
-        console.error("Error loading brand list:", error);
-      }
-    },
-    [perPage, searchKey]
-  );
-
   useEffect(() => {
-    loadBrandList();
-  }, [loadBrandList, perPage, searchKey]);
+    (async () => {
+      console.log(perPage + " $ " + searchKey);
+      await BrandListRequest(1, perPage, searchKey);
+    })();
+  }, []);
+
+  // const loadBrandList = useCallback(
+  //   async (page = 1) => {
+  //     try {
+  //       await BrandListRequest(page, perPage, searchKey);
+  //     } catch (error) {
+  //       console.error("Error loading brand list:", error);
+  //     }
+  //   },
+  //   [perPage, searchKey]
+  // );
+
+  // useEffect(() => {
+  //   loadBrandList();
+  // }, [loadBrandList, perPage, searchKey]);
 
   const filteredItem = React.useMemo(() => {
     if (textFilter === "") {
