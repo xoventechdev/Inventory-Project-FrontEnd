@@ -152,3 +152,29 @@ export const CategoryStatusChange = async (id) => {
     }
   }
 };
+
+export const CategoryDropDownList = async () => {
+  ReduxStore.dispatch(ShowLoader());
+  const url = BaseUrl + "category/dropdownlist/";
+
+  try {
+    const data = await axios.get(url, reqHeaders);
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success") {
+      ReduxStore.dispatch(setFormValues(data.data.response));
+      return true;
+    } else {
+      ErrorToast(data.data.response);
+      return false;
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+    return false;
+  }
+};

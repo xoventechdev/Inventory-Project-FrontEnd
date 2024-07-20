@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Link } from "react-router-dom";
@@ -20,25 +20,9 @@ const BrandList = () => {
 
   useEffect(() => {
     (async () => {
-      console.log(perPage + " $ " + searchKey);
-      await BrandListRequest(1, perPage, searchKey);
+      await BrandListRequest(1, 5, "0");
     })();
   }, []);
-
-  // const loadBrandList = useCallback(
-  //   async (page = 1) => {
-  //     try {
-  //       await BrandListRequest(page, perPage, searchKey);
-  //     } catch (error) {
-  //       console.error("Error loading brand list:", error);
-  //     }
-  //   },
-  //   [perPage, searchKey]
-  // );
-
-  // useEffect(() => {
-  //   loadBrandList();
-  // }, [loadBrandList, perPage, searchKey]);
 
   const filteredItem = React.useMemo(() => {
     if (textFilter === "") {
@@ -172,9 +156,7 @@ const BrandList = () => {
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                               Name
                             </td>
-                            <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                              Photo
-                            </td>
+
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                               Status
                             </td>
@@ -196,11 +178,6 @@ const BrandList = () => {
                                   <td>
                                     <p className="text-xs text-start">
                                       {item.name}
-                                    </p>
-                                  </td>
-                                  <td>
-                                    <p className="text-xs text-start">
-                                      <img className="w-3" src={item.photo} />
                                     </p>
                                   </td>
                                   <td>

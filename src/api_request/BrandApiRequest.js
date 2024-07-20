@@ -47,13 +47,13 @@ export const AddBrand = (data, id) => {
     });
 };
 
-export const BrandListRequest = async (page, perPage, searchKey) => {
+export const BrandListRequest = async (page, perPage, key) => {
   ReduxStore.dispatch(ShowLoader());
-  const url =
-    BaseUrl + "brand/tableList/" + page + "/" + perPage + "/" + searchKey;
+  const url = BaseUrl + "brand/tableList/" + page + "/" + perPage + "/" + key;
 
   try {
     const data = await axios.get(url, reqHeaders);
+    console.log(page + " 8 " + perPage + " 8 " + key);
 
     ReduxStore.dispatch(HideLoader());
     if (data.data.status == "success" && !data.data.data[0].Total[0] == []) {
