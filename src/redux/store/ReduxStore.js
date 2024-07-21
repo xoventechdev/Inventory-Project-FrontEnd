@@ -7,6 +7,7 @@ import categorySlice from "../slice/category-slice";
 import expenseTypeSlice from "../slice/expenseType-slice";
 import brandSlice from "../slice/brand-slice";
 import productSlice from "../slice/product-slice";
+import expenseSlice from "../slice/expense-slice";
 
 export default configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export default configureStore({
     category: categorySlice,
     expenseType: expenseTypeSlice,
     product: productSlice,
+    expense: expenseSlice,
   },
 });
