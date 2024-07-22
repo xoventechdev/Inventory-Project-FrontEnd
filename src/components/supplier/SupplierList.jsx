@@ -179,7 +179,7 @@ const SupplierList = () => {
                                   <td>
                                     <Link
                                       to={`/supplier/edit/${item._id}`}
-                                      className="btn text-info btn-outline-light p-2 mb-0 btn-sm"
+                                      className="btn text-primary btn-outline-light p-2 mb-0 btn-sm"
                                     >
                                       <AiOutlineEdit size={15} />
                                     </Link>

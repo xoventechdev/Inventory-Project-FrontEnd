@@ -19,15 +19,15 @@ const ExpenseForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    (async () => {
+      await ExpenseTypeDropDownList();
+    })();
     if (id) {
       (async () => {
         await ExpenseDetailById(id);
       })();
     } else {
       ReduxStore.dispatch(resetFormValues());
-      (async () => {
-        await ExpenseTypeDropDownList();
-      })();
     }
   }, [id]);
 
@@ -42,7 +42,7 @@ const ExpenseForm = () => {
     const { name, amount, typeID } = formData;
     if (IsEmpty(name)) {
       ErrorToast("Please enter a name");
-    } else if (amount === 0) {
+    } else if (amount === "" || Number(amount) === 0) {
       ErrorToast("Please enter a valid amount");
     } else if (IsEmpty(typeID)) {
       ErrorToast("Please select a expense type");
@@ -98,9 +98,10 @@ const ExpenseForm = () => {
                     onChange={onChangeHandler}
                     className="form-control form-control-sm"
                   >
+                    <option value="">Select Type</option>
                     {typesList.map((type, i) => {
                       return (
-                        <option key={i + 1} value={type.id}>
+                        <option key={i + 1} value={type._id}>
                           {type.name}
                         </option>
                       );
