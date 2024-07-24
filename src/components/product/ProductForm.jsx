@@ -9,6 +9,8 @@ import { ErrorToast, IsEmail, IsEmpty } from "../../utility/FormHelper";
 import { ToastContainer } from "react-toastify";
 import {
   AddProduct,
+  BrandDropDownList,
+  CategoryDropDownList,
   ProductDetailById,
 } from "../../api_request/ProductApiRequest";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,32 +22,39 @@ const ProductForm = () => {
   useEffect(() => {
     if (id) {
       (async () => {
+        await BrandDropDownList();
+        await CategoryDropDownList();
         await ProductDetailById(id);
       })();
     } else {
       (async () => {
-        await ProductDetailById(id);
+        await BrandDropDownList();
+        await CategoryDropDownList();
       })();
       ReduxStore.dispatch(resetFormValues());
     }
   }, [id]);
 
   const formData = useSelector((state) => state.product.formValues);
+  const brandList = useSelector((state) => state.product.brandList);
+  const categoryList = useSelector((state) => state.product.categoryList);
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     ReduxStore.dispatch(setFormValues({ [name]: value }));
   };
 
   const saveTo = () => {
-    const { name, mobile, email, address } = formData;
+    const { name, brandId, categoryId, unit, details } = formData;
     if (IsEmpty(name)) {
       ErrorToast("Please enter a name");
-    } else if (IsEmpty(mobile)) {
-      ErrorToast("Please enter a mobile");
-    } else if (IsEmail(email)) {
-      ErrorToast("Please enter a email");
-    } else if (IsEmpty(address)) {
-      ErrorToast("Please enter an address");
+    } else if (IsEmpty(brandId)) {
+      ErrorToast("Please Select a brand");
+    } else if (IsEmpty(categoryId)) {
+      ErrorToast("Please select a category");
+    } else if (IsEmpty(unit)) {
+      ErrorToast("Please put a unit number");
+    } else if (IsEmpty(details)) {
+      ErrorToast("Please write product detail");
     } else {
       AddProduct(formData, id).then((res) => {
         if (res == 2) {
@@ -77,39 +86,64 @@ const ProductForm = () => {
                   />
                 </div>
                 <div className="col-md-6 col-lg-4 p-2">
-                  <label className="form-label">Mobile No</label>
+                  <label className="form-label">Brand</label>
                   <select
-                    value={formData.status === "" ? "1" : formData.status}
-                    name="status"
+                    value={formData.brandId === "" ? "" : formData.brandId}
+                    name="brandId"
                     onChange={onChangeHandler}
                     className="form-control form-control-sm"
                   >
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
+                    <option value="">Select Brand</option>
+                    {brandList.map((type, i) => {
+                      return (
+                        <option key={i + 1} value={type._id}>
+                          {type.name}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className="col-md-6 col-lg-4 p-2">
-                  <label className="form-label">Email </label>
+                  <label className="form-label">Category</label>
                   <select
-                    value={formData.status === "" ? "1" : formData.status}
-                    name="status"
+                    value={
+                      formData.categoryId === "" ? "" : formData.categoryId
+                    }
+                    name="categoryId"
                     onChange={onChangeHandler}
                     className="form-control form-control-sm"
                   >
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
+                    <option value="">Select Category</option>
+                    {categoryList.map((type, i) => {
+                      return (
+                        <option key={i + 1} value={type._id}>
+                          {type.name}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
-                <div className="col-3 d-flex">
+                <div className="col-md-6 col-lg-6 p-2">
+                  <label className="form-label">Product Detail </label>
+                  <textarea
+                    placeholder="Type Product Detail"
+                    value={formData.details}
+                    name="details"
+                    onChange={onChangeHandler}
+                    className="form-control form-control-sm"
+                    rows={4}
+                  />
+                </div>
+                <div className="col-md-6 col-lg-6 d-flex">
                   <div className="col-6 p-2">
-                    <label className="form-label">Photo </label>
+                    <label className="form-label">Unit </label>
                     <input
-                      placeholder="Type photo url"
-                      value={formData.photo}
-                      name="photo"
+                      placeholder="Type Product Unit"
+                      value={formData.unit}
+                      name="unit"
                       onChange={onChangeHandler}
                       className="form-control form-control-sm"
-                      type="text"
+                      type="number"
                     />
                   </div>
                   <div className="col-6 p-2">
@@ -124,18 +158,6 @@ const ProductForm = () => {
                       <option value="0">Inactive</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="col-12 p-2">
-                  <label className="form-label">Address</label>
-                  <textarea
-                    placeholder="Type address"
-                    value={formData.address}
-                    name="address"
-                    onChange={onChangeHandler}
-                    className="form-control form-control-sm"
-                    rows={4}
-                  />
                 </div>
               </div>
               <div className="row">

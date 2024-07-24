@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { Accordion, Container, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import {
@@ -6,7 +6,10 @@ import {
   AiOutlineLogout,
   AiOutlineMenu,
   AiOutlineUser,
+  AiOutlineFullscreen,
+  AiOutlineFullscreenExit,
 } from "react-icons/ai";
+
 import { VscGraph } from "react-icons/vsc";
 
 import {
@@ -30,6 +33,7 @@ const MasterLayout = (props) => {
   let contentRef,
     sideNavRef,
     topNavRef = useRef();
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   let userInfo = useSelector((state) => state.user.value);
   if (!userInfo || userInfo.length === 0) {
@@ -309,6 +313,34 @@ const MasterLayout = (props) => {
   const onLogout = () => {
     removeSessions();
   };
+
+  const toggleFullScreen = () => {
+    if (
+      !document.fullscreenElement &&
+      !document.mozFullScreenElement &&
+      !document.webkitFullscreenElement
+    ) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen(
+          Element.ALLOW_KEYBOARD_INPUT
+        );
+      }
+      setIsFullScreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+      setIsFullScreen(false);
+    }
+  };
   return (
     <Fragment>
       <Navbar className="fixed-top px-0 ">
@@ -323,6 +355,13 @@ const MasterLayout = (props) => {
               <h4 className="text-white m-0 p-0">
                 <a onClick={MenuBarClickHandler}>
                   <AiOutlineMenu />
+                </a>
+                <a onClick={toggleFullScreen}>
+                  {isFullScreen ? (
+                    <AiOutlineFullscreenExit />
+                  ) : (
+                    <AiOutlineFullscreen />
+                  )}
                 </a>
               </h4>
             </div>

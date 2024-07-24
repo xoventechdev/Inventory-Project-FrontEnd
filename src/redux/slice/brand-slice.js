@@ -7,6 +7,7 @@ export const brandSlice = createSlice({
     totals: 0,
     formValues: {
       name: "",
+      photo: "",
       status: 1,
     },
   },
@@ -23,6 +24,7 @@ export const brandSlice = createSlice({
     resetFormValues: (state) => {
       state.formValues = {
         name: "",
+        photo: "",
         status: 1,
       };
     },

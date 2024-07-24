@@ -158,6 +158,10 @@ const BrandList = () => {
                             </td>
 
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              Photo
+                            </td>
+
+                            <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                               Status
                             </td>
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -178,6 +182,11 @@ const BrandList = () => {
                                   <td>
                                     <p className="text-xs text-start">
                                       {item.name}
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <p className="text-xs text-start">
+                                      <img className="w-3" src={item.photo} />
                                     </p>
                                   </td>
                                   <td>

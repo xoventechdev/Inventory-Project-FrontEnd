@@ -5,11 +5,13 @@ export const productSlice = createSlice({
   initialState: {
     items: [],
     totals: 0,
+    brandList: [],
+    categoryList: [],
     formValues: {
       categoryId: "",
       brandId: "",
       name: "",
-      unit: "",
+      unit: 0,
       details: "",
       status: 1,
     },
@@ -21,6 +23,12 @@ export const productSlice = createSlice({
     setTotalProduct: (state, action) => {
       state.totals = action.payload;
     },
+    setBrandDropDown: (state, action) => {
+      state.brandList = action.payload;
+    },
+    setCategoryDropDown: (state, action) => {
+      state.categoryList = action.payload;
+    },
     setFormValues: (state, action) => {
       state.formValues = { ...state.formValues, ...action.payload };
     },
@@ -29,7 +37,7 @@ export const productSlice = createSlice({
         categoryId: "",
         brandId: "",
         name: "",
-        unit: "",
+        unit: 0,
         details: "",
         status: 1,
       };
@@ -40,6 +48,8 @@ export const productSlice = createSlice({
 export const {
   setProductItem,
   setTotalProduct,
+  setBrandDropDown,
+  setCategoryDropDown,
   setFormValues,
   resetFormValues,
 } = productSlice.actions;

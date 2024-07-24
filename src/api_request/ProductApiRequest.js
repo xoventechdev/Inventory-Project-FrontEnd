@@ -8,6 +8,8 @@ import {
   setProductItem,
   setFormValues,
   setTotalProduct,
+  setBrandDropDown,
+  setCategoryDropDown,
 } from "../redux/slice/product-slice";
 import { removeSessions } from "../utility/SessionHelper";
 
@@ -149,5 +151,57 @@ export const ProductStatusChange = async (id) => {
     } else {
       ErrorToast(error.response?.data?.response || "An error occurred");
     }
+  }
+};
+
+export const BrandDropDownList = async () => {
+  ReduxStore.dispatch(ShowLoader());
+  const url = BaseUrl + "brand/dropdownlist/";
+
+  try {
+    const data = await axios.get(url, reqHeaders);
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success") {
+      ReduxStore.dispatch(setBrandDropDown(data.data.response));
+      return true;
+    } else {
+      ErrorToast(data.data.response);
+      return false;
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+    return false;
+  }
+};
+
+export const CategoryDropDownList = async () => {
+  ReduxStore.dispatch(ShowLoader());
+  const url = BaseUrl + "category/dropdownlist/";
+
+  try {
+    const data = await axios.get(url, reqHeaders);
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success") {
+      ReduxStore.dispatch(setCategoryDropDown(data.data.response));
+      return true;
+    } else {
+      ErrorToast(data.data.response);
+      return false;
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+    return false;
   }
 };
