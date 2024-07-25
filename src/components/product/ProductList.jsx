@@ -30,9 +30,10 @@ const ProductList = () => {
       return tableItem.filter(
         (item) =>
           item.name.toLowerCase().includes(textFilter.toLowerCase()) ||
-          item.amount.toString().includes(textFilter) ||
-          item.note.toLowerCase().includes(textFilter.toLowerCase()) ||
-          item.type[0].name.toLowerCase().includes(textFilter.toLowerCase())
+          item.unit.toString().includes(textFilter) ||
+          item.details.toLowerCase().includes(textFilter.toLowerCase()) ||
+          item.brand[0].name.toLowerCase().includes(textFilter.toLowerCase()) ||
+          item.category[0].name.toLowerCase().includes(textFilter.toLowerCase())
       );
     }
   });
