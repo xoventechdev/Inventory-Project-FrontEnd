@@ -10,6 +10,7 @@ import {
   BrandListRequest,
   BrandStatusChange,
 } from "../../api_request/BrandApiRequest";
+import { ToastContainer } from "react-toastify";
 
 const BrandList = () => {
   const tableItem = useSelector((state) => state.brand.items);
@@ -101,6 +102,7 @@ const BrandList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Brand List</h5>
                   </div>
 

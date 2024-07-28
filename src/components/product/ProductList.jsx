@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
+import { ToastContainer } from "react-toastify";
 
 const ProductList = () => {
   const tableItem = useSelector((state) => state.product.items);
@@ -105,6 +106,7 @@ const ProductList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Product List</h5>
                   </div>
 

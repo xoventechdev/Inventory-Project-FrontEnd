@@ -9,6 +9,7 @@ import {
   SupplierDeleteRequest,
   SupplierListRequest,
 } from "../../api_request/SupplierApiRequest";
+import { ToastContainer } from "react-toastify";
 
 const SupplierList = () => {
   const tableItem = useSelector((state) => state.supplier.items);
@@ -84,6 +85,7 @@ const SupplierList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Supplier List</h5>
                   </div>
 

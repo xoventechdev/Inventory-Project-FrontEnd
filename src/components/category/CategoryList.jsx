@@ -10,6 +10,7 @@ import {
   CategoryListRequest,
   CategoryStatusChange,
 } from "../../api_request/CategoryApiRequest";
+import { ToastContainer } from "react-toastify";
 
 const CategoryList = () => {
   const tableItem = useSelector((state) => state.category.items);
@@ -100,6 +101,7 @@ const CategoryList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Category List</h5>
                   </div>
 

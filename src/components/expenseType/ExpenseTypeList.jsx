@@ -10,6 +10,7 @@ import {
   ExpenseTypeListRequest,
   ExpenseTypeStatusChange,
 } from "../../api_request/ExpenseTypeApiRequest";
+import { ToastContainer } from "react-toastify";
 
 const ExpenseTypeList = () => {
   const tableItem = useSelector((state) => state.expenseType.items);
@@ -100,6 +101,7 @@ const ExpenseTypeList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>ExpenseType List</h5>
                   </div>
 

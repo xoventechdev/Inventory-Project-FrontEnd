@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
+import { ToastContainer } from "react-toastify";
 
 const CustomerList = () => {
   const tableItem = useSelector((state) => state.customer.items);
@@ -83,6 +84,7 @@ const CustomerList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Customer List</h5>
                   </div>
 
