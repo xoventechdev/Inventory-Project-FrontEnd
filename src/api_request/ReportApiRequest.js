@@ -11,19 +11,20 @@ export const ExpenseReportRequest = async (from, to) => {
   ReduxStore.dispatch(ShowLoader());
   const url = BaseUrl + "expense/report";
   const postBody = {
-    fromDate: from + "T00:00:00.000+00:00",
-    toDate: to + "T00:00:00.000+00:00",
+    fromDate: from + "T00:00:00.000Z",
+    toDate: to + "T23:59:59.999Z",
   };
 
   try {
     const data = await axios.post(url, postBody, reqHeaders);
-    // console.log(data);
     ReduxStore.dispatch(HideLoader());
     if (
       data.data.status == "success" &&
       data.data.response[0].data.length > 0
     ) {
       ReduxStore.dispatch(setExpenseReport(data.data.response[0]));
+    } else {
+      ErrorToast("Expense Report data is not available");
     }
   } catch (error) {
     ReduxStore.dispatch(HideLoader());
