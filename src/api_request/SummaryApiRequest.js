@@ -29,7 +29,7 @@ export const ExpenseSummaryRequest = async () => {
     }
   } catch (error) {
     ReduxStore.dispatch(HideLoader());
-    ReduxStore.dispatch(setExpenseSummary([]));
+    // ReduxStore.dispatch(setExpenseSummary([]));
     if (error.response && error.response.status === 401) {
       ErrorToast("Unauthorized. Please log in again.");
       removeSessions();
@@ -45,6 +45,7 @@ export const PurchaseSummaryRequest = async () => {
 
   try {
     const data = await axios.get(url, reqHeaders);
+
     ReduxStore.dispatch(HideLoader());
     if (
       data.data.status == "success" &&
@@ -72,6 +73,7 @@ export const ReturnSummaryRequest = async () => {
 
   try {
     const data = await axios.get(url, reqHeaders);
+
     ReduxStore.dispatch(HideLoader());
     if (
       data.data.status == "success" &&
@@ -99,6 +101,7 @@ export const SalesSummaryRequest = async () => {
 
   try {
     const data = await axios.get(url, reqHeaders);
+
     ReduxStore.dispatch(HideLoader());
     if (
       data.data.status == "success" &&

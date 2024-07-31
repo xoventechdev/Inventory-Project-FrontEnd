@@ -10,6 +10,7 @@ import productSlice from "../slice/product-slice";
 import expenseSlice from "../slice/expense-slice";
 import reportSlice from "../slice/report-slice";
 import summarySlice from "../slice/summary-slice";
+import purchaseSlice from "../slice/purchase-slice";
 
 export default configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export default configureStore({
     expense: expenseSlice,
     report: reportSlice,
     summary: summarySlice,
+    purchase: purchaseSlice,
   },
 });
