@@ -35,14 +35,6 @@ const PurchaseForm = () => {
   const onChangePurchase = (e) => {
     const { name, value } = e.target;
     ReduxStore.dispatch(setFormValues({ [name]: value }));
-
-    let grandCost =
-      formData.grandCost +
-      formData.vatTax +
-      formData.otherCost +
-      formData.shippingCost -
-      formData.discount;
-    ReduxStore.dispatch(setFormValues({ grandCost }));
   };
   const onChangePurchaseItem = (e) => {
     const { name, value } = e.target;
