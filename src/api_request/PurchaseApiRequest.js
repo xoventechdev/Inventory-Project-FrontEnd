@@ -9,6 +9,8 @@ import {
   emptyPurchaseItemList,
   resetFormValues,
   setProductDropDown,
+  setPurchaseList,
+  setPurchaseTotal,
   setSupplierDropDown,
 } from "../redux/slice/purchase-slice";
 
@@ -47,6 +49,61 @@ export const AddPurchase = (data, id) => {
       }
       return 0;
     });
+};
+
+export const PurchaseListRequest = async (page, perPage, key) => {
+  ReduxStore.dispatch(ShowLoader());
+  const url =
+    BaseUrl + "purchase/tableList/" + page + "/" + perPage + "/" + key;
+
+  try {
+    const data = await axios.get(url, reqHeaders);
+
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success" && !data.data.data[0].Total[0] == []) {
+      ReduxStore.dispatch(setPurchaseList(data.data.data[0].Rows));
+      ReduxStore.dispatch(setPurchaseTotal(data.data.data[0].Total[0].count));
+    } else {
+      ReduxStore.dispatch(setPurchaseList([]));
+      ReduxStore.dispatch(setPurchaseTotal(0));
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    ReduxStore.dispatch(setPurchaseList([]));
+    ReduxStore.dispatch(setPurchaseTotal(0));
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+  }
+};
+
+export const PurchaseDeleteRequest = async (id) => {
+  ReduxStore.dispatch(ShowLoader());
+  const url = BaseUrl + "purchase/delete/" + id;
+
+  try {
+    const data = await axios.delete(url, reqHeaders);
+
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success") {
+      SuccessToast(data.data.response);
+      return true;
+    } else {
+      ErrorToast(data.data.response);
+      return false;
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+  }
 };
 
 export const SupplierDropDownList = async () => {

@@ -24,6 +24,7 @@ const PurchaseForm = () => {
       await ProductDropDownList();
     })();
   }, []);
+
   const formData = useSelector((state) => state.purchase.formValues);
   const itemFromValues = useSelector((state) => state.purchase.itemFromValues);
   const supplierList = useSelector((state) => state.purchase.supplierList);
@@ -32,37 +33,50 @@ const PurchaseForm = () => {
     (state) => state.purchase.purchaseItemList
   );
 
+  const vatTax = parseFloat(formData.vatTax) || 0;
+  const otherCost = parseFloat(formData.otherCost) || 0;
+  const shippingCost = parseFloat(formData.shippingCost) || 0;
+  const discount = parseFloat(formData.discount) || 0;
+  const baseGrandCost = formData.grandCost || 0;
+
   const onChangePurchase = (e) => {
     const { name, value } = e.target;
     ReduxStore.dispatch(setFormValues({ [name]: value }));
   };
+
   const onChangePurchaseItem = (e) => {
     const { name, value } = e.target;
     if (name === "productId") {
       const productName = e.target.options[e.target.selectedIndex].text;
-      ReduxStore.dispatch(
-        setItemFormValues({ productId: value, productName: productName })
-      );
+      ReduxStore.dispatch(setItemFormValues({ productId: value, productName }));
     } else {
       ReduxStore.dispatch(setItemFormValues({ [name]: value }));
     }
   };
 
   const addToPurchase = async () => {
+    const updatedValues = {
+      ...formData,
+      grandCost:
+        formData.baseGrandCost +
+        formData.vatTax +
+        formData.otherCost +
+        formData.shippingCost -
+        formData.discount,
+    };
     if (IsEmpty(formData.supplierId)) {
       ErrorToast("Select a supplier");
     } else if (purchaseItemList.length === 0) {
       ErrorToast("Please, select a purchase in product list");
     } else {
-      await AddPurchase({ parent: formData, child: itemFromValues }).then(
-        (res) => {
-          if (res == 2) {
-            navigate("/purchase");
-          } else {
-            SuccessToast("Purchase added successfully");
-          }
+      await AddPurchase({
+        parent: updatedValues,
+        child: purchaseItemList,
+      }).then((res) => {
+        if (res === 2) {
+          navigate("/purchase");
         }
-      );
+      });
     }
   };
 
@@ -82,18 +96,19 @@ const PurchaseForm = () => {
         total: itemFromValues.qty * itemFromValues.unitCost,
       };
 
-      let grandCost = formData.grandCost + updatedItemValues.total;
-      ReduxStore.dispatch(setFormValues({ grandCost }));
+      const newGrandCost = formData.grandCost + updatedItemValues.total;
+      ReduxStore.dispatch(setFormValues({ grandCost: newGrandCost }));
       ReduxStore.dispatch(savePurchaseItemList(updatedItemValues));
       ReduxStore.dispatch(resetItemFormValues());
     }
   };
 
   const removeFromPurchaseItem = (i, total) => {
-    let grandCost = formData.grandCost - total;
-    ReduxStore.dispatch(setFormValues({ grandCost }));
+    const newGrandCost = formData.grandCost - total;
+    ReduxStore.dispatch(setFormValues({ grandCost: newGrandCost }));
     ReduxStore.dispatch(removePurchaseItemList(i));
   };
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -115,16 +130,13 @@ const PurchaseForm = () => {
                     className="form-control form-control-sm"
                   >
                     <option value="">Select Supplier</option>
-                    {supplierList.map((type, i) => {
-                      return (
-                        <option key={i + 1} value={type._id}>
-                          {type.name}
-                        </option>
-                      );
-                    })}
+                    {supplierList.map((type, i) => (
+                      <option key={i + 1} value={type._id}>
+                        {type.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Vat/Tax</label>
                   <input
@@ -135,7 +147,6 @@ const PurchaseForm = () => {
                     type="number"
                   />
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Discount</label>
                   <input
@@ -146,7 +157,6 @@ const PurchaseForm = () => {
                     type="number"
                   />
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Other Cost</label>
                   <input
@@ -157,7 +167,6 @@ const PurchaseForm = () => {
                     type="number"
                   />
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Shipping Cost</label>
                   <input
@@ -168,18 +177,16 @@ const PurchaseForm = () => {
                     type="number"
                   />
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Grand Total</label>
                   <input
                     value={formData.grandCost}
                     name="grandCost"
-                    disabled
+                    onChange={onChangePurchase}
                     className="form-control form-control-sm"
                     type="number"
                   />
                 </div>
-
                 <div className="col-12 p-1">
                   <label className="form-label">Note</label>
                   <input
@@ -205,10 +212,10 @@ const PurchaseForm = () => {
           </div>
         </div>
         <div className="col-12 col-md-8 col-lg-8 mb-3">
-          <div className="card  h-100">
+          <div className="card h-100">
             <div className="card-body">
               <div className="row">
-                <div className="col-6  p-1">
+                <div className="col-6 p-1">
                   <label className="form-label">Select Product</label>
                   <select
                     value={
@@ -221,13 +228,11 @@ const PurchaseForm = () => {
                     className="form-control form-control-sm"
                   >
                     <option value="">Select Product</option>
-                    {productList.map((type, i) => {
-                      return (
-                        <option key={i + 1} value={type._id}>
-                          {type.name}
-                        </option>
-                      );
-                    })}
+                    {productList.map((type, i) => (
+                      <option key={i + 1} value={type._id}>
+                        {type.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="col-2 p-1">
@@ -258,7 +263,6 @@ const PurchaseForm = () => {
                   </button>
                 </div>
               </div>
-
               <div className="row">
                 <div className="col-12">
                   <div className="table-responsive table-section">
@@ -273,28 +277,26 @@ const PurchaseForm = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {purchaseItemList.map((item, i) => {
-                          return (
-                            <tr key={i}>
-                              <td>{item.productName}</td>
-                              <td>{item.qty}</td>
-                              <td>{item.unitCost}</td>
-                              <td>{item.total}</td>
-                              <td>
-                                <button
-                                  onClick={removeFromPurchaseItem.bind(
-                                    this,
-                                    i,
-                                    item.total
-                                  )}
-                                  className="btn btn-outline-light text-danger p-2 mb-0 btn-sm ms-2"
-                                >
-                                  <BsTrash />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
+                        {purchaseItemList.map((item, i) => (
+                          <tr key={i}>
+                            <td>{item.productName}</td>
+                            <td>{item.qty}</td>
+                            <td>{item.unitCost}</td>
+                            <td>{item.total}</td>
+                            <td>
+                              <button
+                                onClick={removeFromPurchaseItem.bind(
+                                  this,
+                                  i,
+                                  item.total
+                                )}
+                                className="btn btn-outline-light text-danger p-2 mb-0 btn-sm ms-2"
+                              >
+                                <BsTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
