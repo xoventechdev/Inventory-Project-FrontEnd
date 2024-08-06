@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
+import { ToastContainer } from "react-toastify";
 
 const PurchaseList = () => {
   const tableItem = useSelector((state) => state.purchase.list);
-  console.log(tableItem);
   const totalItem = useSelector((state) => state.purchase.totals);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -29,9 +29,14 @@ const PurchaseList = () => {
     } else {
       return tableItem.filter(
         (item) =>
-          item.name.toLowerCase().includes(textFilter.toLowerCase()) ||
-          item.amount.toString().includes(textFilter) ||
-          item.note.toLowerCase().includes(textFilter.toLowerCase())
+          item.supplier[0].name
+            .toLowerCase()
+            .includes(textFilter.toLowerCase()) ||
+          item.grandCost.toString().includes(textFilter) ||
+          item.shippingCost.toString().includes(textFilter) ||
+          item.otherCost.toString().includes(textFilter) ||
+          item.discount.toString().includes(textFilter) ||
+          item.vatTax.toString().includes(textFilter)
       );
     }
   });
@@ -84,6 +89,7 @@ const PurchaseList = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-4">
+                    <ToastContainer />
                     <h5>Purchase List</h5>
                   </div>
 

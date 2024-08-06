@@ -8,6 +8,10 @@ import { removeSessions } from "../utility/SessionHelper";
 import {
   emptyPurchaseItemList,
   resetFormValues,
+  savePurchaseItemList,
+  savePurchaseItemListFromAPI,
+  setFormValues,
+  setItemFormValues,
   setProductDropDown,
   setPurchaseList,
   setPurchaseTotal,
@@ -141,6 +145,36 @@ export const ProductDropDownList = async () => {
     ReduxStore.dispatch(HideLoader());
     if (data.data.status == "success") {
       ReduxStore.dispatch(setProductDropDown(data.data.response));
+      return true;
+    } else {
+      ErrorToast(data.data.response);
+      return false;
+    }
+  } catch (error) {
+    ReduxStore.dispatch(HideLoader());
+    if (error.response && error.response.status === 401) {
+      ErrorToast("Unauthorized. Please log in again.");
+      removeSessions();
+    } else {
+      ErrorToast(error.response?.data?.response || "An error occurred");
+    }
+    return false;
+  }
+};
+
+export const PurchaseDetailById = async (id) => {
+  ReduxStore.dispatch(ShowLoader());
+  const url = BaseUrl + "purchase/detail/" + id;
+
+  try {
+    const data = await axios.get(url, reqHeaders);
+    // console.log(data);
+    ReduxStore.dispatch(HideLoader());
+    if (data.data.status == "success") {
+      const { items, ...purchaseWithoutItems } = data.data.response[0];
+
+      ReduxStore.dispatch(setFormValues(purchaseWithoutItems));
+      ReduxStore.dispatch(savePurchaseItemListFromAPI(items));
       return true;
     } else {
       ErrorToast(data.data.response);

@@ -36,6 +36,9 @@ export const purchaseSlice = createSlice({
     savePurchaseItemList: (state, action) => {
       state.purchaseItemList.push(action.payload);
     },
+    savePurchaseItemListFromAPI: (state, action) => {
+      state.purchaseItemList = action.payload;
+    },
     removePurchaseItemList: (state, action) => {
       state.purchaseItemList.splice(action.payload, 1);
     },
@@ -82,6 +85,7 @@ export const {
   setPurchaseList,
   setPurchaseTotal,
   savePurchaseItemList,
+  savePurchaseItemListFromAPI,
   removePurchaseItemList,
   emptyPurchaseItemList,
   setSupplierDropDown,

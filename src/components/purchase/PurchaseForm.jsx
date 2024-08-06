@@ -4,10 +4,13 @@ import { BsCartCheck, BsTrash } from "react-icons/bs";
 import {
   AddPurchase,
   ProductDropDownList,
+  PurchaseDetailById,
   SupplierDropDownList,
 } from "../../api_request/PurchaseApiRequest";
 import {
+  emptyPurchaseItemList,
   removePurchaseItemList,
+  resetFormValues,
   resetItemFormValues,
   savePurchaseItemList,
   setFormValues,
@@ -16,14 +19,27 @@ import {
 import ReduxStore from "../../redux/store/ReduxStore";
 import { ErrorToast, IsEmpty, SuccessToast } from "../../utility/FormHelper";
 import { ToastContainer } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const PurchaseForm = () => {
+  const { id } = useParams();
+
   useEffect(() => {
-    (async () => {
-      await SupplierDropDownList();
-      await ProductDropDownList();
-    })();
-  }, []);
+    if (id) {
+      (async () => {
+        await PurchaseDetailById(id);
+        await SupplierDropDownList();
+        await ProductDropDownList();
+      })();
+    } else {
+      ReduxStore.dispatch(resetFormValues());
+      ReduxStore.dispatch(emptyPurchaseItemList());
+      (async () => {
+        await SupplierDropDownList();
+        await ProductDropDownList();
+      })();
+    }
+  }, [id]);
 
   const formData = useSelector((state) => state.purchase.formValues);
   const itemFromValues = useSelector((state) => state.purchase.itemFromValues);
@@ -32,12 +48,6 @@ const PurchaseForm = () => {
   const purchaseItemList = useSelector(
     (state) => state.purchase.purchaseItemList
   );
-
-  const vatTax = parseFloat(formData.vatTax) || 0;
-  const otherCost = parseFloat(formData.otherCost) || 0;
-  const shippingCost = parseFloat(formData.shippingCost) || 0;
-  const discount = parseFloat(formData.discount) || 0;
-  const baseGrandCost = formData.grandCost || 0;
 
   const onChangePurchase = (e) => {
     const { name, value } = e.target;
@@ -55,20 +65,25 @@ const PurchaseForm = () => {
   };
 
   const addToPurchase = async () => {
-    const updatedValues = {
-      ...formData,
-      grandCost:
-        formData.baseGrandCost +
-        formData.vatTax +
-        formData.otherCost +
-        formData.shippingCost -
-        formData.discount,
-    };
+    const baseGrandCost = parseFloat(formData.baseGrandCost) || 0;
+    const vatTax = parseFloat(formData.vatTax) || 0;
+    const otherCost = parseFloat(formData.otherCost) || 0;
+    const shippingCost = parseFloat(formData.shippingCost) || 0;
+    const discount = parseFloat(formData.discount) || 0;
+
+    const grandCost =
+      baseGrandCost + vatTax + otherCost + shippingCost - discount;
+
     if (IsEmpty(formData.supplierId)) {
       ErrorToast("Select a supplier");
     } else if (purchaseItemList.length === 0) {
       ErrorToast("Please, select a purchase in product list");
     } else {
+      const updatedValues = {
+        ...formData,
+        grandCost,
+      };
+      console.log(updatedValues);
       await AddPurchase({
         parent: updatedValues,
         child: purchaseItemList,
@@ -194,7 +209,7 @@ const PurchaseForm = () => {
                     name="note"
                     onChange={onChangePurchase}
                     className="form-control form-control-sm"
-                    type="number"
+                    type="text"
                   />
                 </div>
               </div>
@@ -279,7 +294,11 @@ const PurchaseForm = () => {
                       <tbody>
                         {purchaseItemList.map((item, i) => (
                           <tr key={i}>
-                            <td>{item.productName}</td>
+                            <td>
+                              {item.product
+                                ? item.product.name
+                                : item.productName}
+                            </td>
                             <td>{item.qty}</td>
                             <td>{item.unitCost}</td>
                             <td>{item.total}</td>
