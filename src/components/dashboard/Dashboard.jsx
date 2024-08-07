@@ -16,6 +16,7 @@ import {
   SalesSummaryRequest,
 } from "../../api_request/SummaryApiRequest";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 const Dashboard = () => {
   useEffect(() => {
@@ -29,12 +30,12 @@ const Dashboard = () => {
 
   const expenseSummary = useSelector((state) => state.summary.expenseSummary);
   const salesSummary = useSelector((state) => state.summary.salesSummary);
-  console.log(expenseSummary);
   const returnSummary = useSelector((state) => state.summary.returnSummary);
   const purchaseSummary = useSelector((state) => state.summary.purchaseSummary);
 
   return (
     <div className="container-fluid">
+      <ToastContainer />
       <div className="row">
         <div className="col-md-3 p-2">
           <div className="card">
@@ -42,9 +43,7 @@ const Dashboard = () => {
               <span className="h5">
                 <CurrencyFormat
                   value={
-                    expenseSummary.length > 0
-                      ? expenseSummary.total[0].total
-                      : 0
+                    expenseSummary.total ? expenseSummary.total[0].total : 0
                   }
                   displayType={"text"}
                   thousandSeparator={true}
@@ -55,12 +54,12 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        {/* <div className="col-md-3 p-2">
+        <div className="col-md-3 p-2">
           <div className="card">
             <div className="card-body">
               <span className="h5">
                 <CurrencyFormat
-                  value={salesSummary.total[0].total}
+                  value={salesSummary.total ? salesSummary.total[0].total : 0}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"$"}
@@ -75,7 +74,9 @@ const Dashboard = () => {
             <div className="card-body">
               <span className="h5">
                 <CurrencyFormat
-                  value={returnSummary.total[0].total}
+                  value={
+                    purchaseSummary.total ? purchaseSummary.total[0].total : 0
+                  }
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"$"}
@@ -90,7 +91,7 @@ const Dashboard = () => {
             <div className="card-body">
               <span className="h5">
                 <CurrencyFormat
-                  value={purchaseSummary.total[0].total}
+                  value={returnSummary.total ? returnSummary.total[0].total : 0}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"$"}
@@ -99,7 +100,7 @@ const Dashboard = () => {
               <p>Total Return</p>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
       <div className="row">
         <div className="col-md-6 p-2">
@@ -128,7 +129,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        {/* <div className="col-md-6 p-2">
+        <div className="col-md-6 p-2">
           <div className="card">
             <div className="card-body">
               <span className="h6">Sales Last 30 Days</span>
@@ -205,7 +206,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );
