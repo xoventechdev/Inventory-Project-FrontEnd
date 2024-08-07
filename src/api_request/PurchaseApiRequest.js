@@ -168,7 +168,6 @@ export const PurchaseDetailById = async (id) => {
 
   try {
     const data = await axios.get(url, reqHeaders);
-    // console.log(data);
     ReduxStore.dispatch(HideLoader());
     if (data.data.status == "success") {
       const { items, ...purchaseWithoutItems } = data.data.response[0];

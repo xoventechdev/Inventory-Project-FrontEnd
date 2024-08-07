@@ -36,7 +36,8 @@ const PurchaseList = () => {
           item.shippingCost.toString().includes(textFilter) ||
           item.otherCost.toString().includes(textFilter) ||
           item.discount.toString().includes(textFilter) ||
-          item.vatTax.toString().includes(textFilter)
+          item.vatTax.toString().includes(textFilter) ||
+          item.note.toLowerCase().includes(textFilter.toLowerCase())
       );
     }
   });
@@ -149,6 +150,9 @@ const PurchaseList = () => {
                               Grand Total
                             </td>
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              Total
+                            </td>
+                            <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                               Shipping Cost
                             </td>
                             <td className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -181,6 +185,15 @@ const PurchaseList = () => {
                                   <td>
                                     <p className="text-xs text-start">
                                       {item.supplier[0].name}
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <p className="text-xs text-start">
+                                      {item.grandCost +
+                                        item.shippingCost +
+                                        item.vatTax +
+                                        item.otherCost -
+                                        item.discount}
                                     </p>
                                   </td>
                                   <td>

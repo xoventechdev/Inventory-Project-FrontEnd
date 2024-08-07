@@ -19,10 +19,11 @@ import {
 import ReduxStore from "../../redux/store/ReduxStore";
 import { ErrorToast, IsEmpty, SuccessToast } from "../../utility/FormHelper";
 import { ToastContainer } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PurchaseForm = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -65,29 +66,18 @@ const PurchaseForm = () => {
   };
 
   const addToPurchase = async () => {
-    const baseGrandCost = parseFloat(formData.baseGrandCost) || 0;
-    const vatTax = parseFloat(formData.vatTax) || 0;
-    const otherCost = parseFloat(formData.otherCost) || 0;
-    const shippingCost = parseFloat(formData.shippingCost) || 0;
-    const discount = parseFloat(formData.discount) || 0;
-
-    const grandCost =
-      baseGrandCost + vatTax + otherCost + shippingCost - discount;
-
     if (IsEmpty(formData.supplierId)) {
       ErrorToast("Select a supplier");
     } else if (purchaseItemList.length === 0) {
       ErrorToast("Please, select a purchase in product list");
     } else {
-      const updatedValues = {
-        ...formData,
-        grandCost,
-      };
-      console.log(updatedValues);
-      await AddPurchase({
-        parent: updatedValues,
-        child: purchaseItemList,
-      }).then((res) => {
+      await AddPurchase(
+        {
+          parent: formData,
+          child: purchaseItemList,
+        },
+        id
+      ).then((res) => {
         if (res === 2) {
           navigate("/purchase");
         }
@@ -132,7 +122,7 @@ const PurchaseForm = () => {
             <div className="card-body">
               <div className="row">
                 <ToastContainer />
-                <h5>Create Purchase</h5>
+                <h5>{id ? "Update Purchase" : "Create Purchase"}</h5>
                 <hr className="bg-light" />
                 <div className="col-12 p-1">
                   <label className="form-label">Supplier</label>
@@ -193,11 +183,12 @@ const PurchaseForm = () => {
                   />
                 </div>
                 <div className="col-12 p-1">
-                  <label className="form-label">Grand Total</label>
+                  <label className="form-label">Total</label>
                   <input
                     value={formData.grandCost}
                     name="grandCost"
                     onChange={onChangePurchase}
+                    disabled
                     className="form-control form-control-sm"
                     type="number"
                   />
@@ -219,7 +210,7 @@ const PurchaseForm = () => {
                     onClick={addToPurchase}
                     className="btn btn-sm my-3 btn-success"
                   >
-                    Create
+                    {id ? "Update" : "Create"}
                   </button>
                 </div>
               </div>
