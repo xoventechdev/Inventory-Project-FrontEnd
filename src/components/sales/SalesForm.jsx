@@ -281,30 +281,38 @@ const SalesForm = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {salesItemList.map((item, i) => (
-                          <tr key={i}>
-                            <td>
-                              {item.product
-                                ? item.product.name
-                                : item.productName}
-                            </td>
-                            <td>{item.qty}</td>
-                            <td>{item.unitCost}</td>
-                            <td>{item.total}</td>
-                            <td>
-                              <button
-                                onClick={removeFromSalesItem.bind(
-                                  this,
-                                  i,
-                                  item.total
-                                )}
-                                className="btn btn-outline-light text-danger p-2 mb-0 btn-sm ms-2"
-                              >
-                                <BsTrash />
-                              </button>
+                        {salesItemList.length > 0 ? (
+                          salesItemList.map((item, i) => (
+                            <tr key={i}>
+                              <td>
+                                {item.product
+                                  ? item.product.name
+                                  : item.productName}
+                              </td>
+                              <td>{item.qty}</td>
+                              <td>{item.unitCost}</td>
+                              <td>{item.total}</td>
+                              <td>
+                                <button
+                                  onClick={removeFromSalesItem.bind(
+                                    this,
+                                    i,
+                                    item.total
+                                  )}
+                                  className="btn btn-outline-light text-danger p-2 mb-0 btn-sm ms-2"
+                                >
+                                  <BsTrash />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="5" className="text-center">
+                              No Data Found
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
