@@ -199,8 +199,8 @@ const Dashboard = () => {
                   <Area
                     type="monotone"
                     dataKey="total"
-                    stroke="#CB0C9F"
-                    fill="#CB0C9F"
+                    stroke="#008fff "
+                    fill="#008fff "
                   />
                 </AreaChart>
               </ResponsiveContainer>

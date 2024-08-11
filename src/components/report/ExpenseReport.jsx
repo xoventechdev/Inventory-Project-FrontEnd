@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ExpenseReportRequest } from "../../api_request/ReportApiRequest";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import { ErrorToast } from "../../utility/FormHelper";
-import { addDays, differenceInDays, format, subDays, parseISO } from "date-fns";
 import exportFromJSON from "export-from-json";
 import {
   AreaChart,
@@ -13,8 +12,11 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Line,
 } from "recharts";
+import {
+  calculateDaysBetweenDates,
+  mergedReportData,
+} from "../../utility/Config";
 
 const ExpenseReport = () => {
   const today = new Date();
@@ -87,7 +89,7 @@ const ExpenseReport = () => {
   };
 
   useEffect(() => {
-    setPredefinedDateRange("Today");
+    setPredefinedDateRange("7 Days");
   }, []);
 
   useEffect(() => {
@@ -115,22 +117,7 @@ const ExpenseReport = () => {
     }
   };
 
-  const dateRange = subDays(toDate, rangeCount - 1);
-  let dateArray = [];
-  for (let i = 0; i < rangeCount; i++) {
-    dateArray.push(format(addDays(dateRange, i), "yyyy-MM-dd"));
-  }
-  let mergedData = dateArray.map((date) => {
-    if (report.data) {
-      let found = report.data.find((d) => d._id === date);
-      return {
-        _id: date,
-        total: found ? found.total : 0,
-      };
-    } else {
-      return null;
-    }
-  });
+  const mergedData = mergedReportData(toDate, rangeCount, report.data);
 
   const exportData = (fileType) => {
     const fileName = `Expense Report ${today}`;
@@ -149,20 +136,6 @@ const ExpenseReport = () => {
         exportType: fileType,
       });
     }
-  };
-
-  const calculateDaysBetweenDates = (startDate, endDate) => {
-    // Convert the strings to Date objects
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    // Calculate the difference in milliseconds
-    const diffInMs = start - end;
-
-    // Convert milliseconds to days
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    return diffInDays + 1;
   };
 
   return (
