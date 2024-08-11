@@ -3,6 +3,8 @@ import { ExpenseReportRequest } from "../../api_request/ReportApiRequest";
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import { ErrorToast } from "../../utility/FormHelper";
+import { addDays, differenceInDays, format, subDays, parseISO } from "date-fns";
+import exportFromJSON from "export-from-json";
 import {
   AreaChart,
   Area,
@@ -15,22 +17,22 @@ import {
 } from "recharts";
 
 const ExpenseReport = () => {
-  const report = useSelector((state) => state.report.expenseReport);
-  const expenseSummary = useSelector((state) => state.summary.expenseSummary);
-  const [title, setTitle] = useState("Today");
-  const [customSearch, setCustomSearch] = useState(false);
-  const fromRef = useRef();
-  const toRef = useRef();
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
-  const [processedData, setProcessedData] = useState([]);
-
+  const today = new Date();
   const formatDate = (date) => {
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   };
+
+  const report = useSelector((state) => state.report.expenseReport);
+  const [title, setTitle] = useState("Today");
+  const [customSearch, setCustomSearch] = useState(false);
+  const fromRef = useRef();
+  const toRef = useRef();
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(formatDate(today));
+  const [rangeCount, setRangeCount] = useState(1);
 
   const setPredefinedDateRange = (range) => {
     const today = new Date();
@@ -40,71 +42,48 @@ const ExpenseReport = () => {
       case "Today":
         startDate = new Date(today);
         endDate = new Date(today);
+        setRangeCount(1);
         break;
       case "2 Days":
         startDate = new Date(today);
         startDate.setDate(today.getDate() - 1);
         endDate = new Date(today);
+        setRangeCount(2);
         break;
       case "7 Days":
         startDate = new Date(today);
         startDate.setDate(today.getDate() - 7);
         endDate = new Date(today);
+        setRangeCount(7);
         break;
       case "1 Month":
         startDate = new Date(today);
         startDate.setMonth(today.getMonth() - 1);
         endDate = new Date(today);
+        setRangeCount(30);
         break;
       case "3 Months":
         startDate = new Date(today);
         startDate.setMonth(today.getMonth() - 3);
         endDate = new Date(today);
+        setRangeCount(91);
         break;
       case "6 Months":
         startDate = new Date(today);
         startDate.setMonth(today.getMonth() - 6);
         endDate = new Date(today);
+        setRangeCount(183);
         break;
       default:
         startDate = new Date(today);
         endDate = new Date(today);
+        setRangeCount(1);
     }
 
     setFromDate(formatDate(startDate));
     setToDate(formatDate(endDate));
     setTitle(range);
     setCustomSearch(!customSearch);
-  };
-
-  const preprocessData = (data, range) => {
-    let processed = [];
-    let dateFormat = "day";
-
-    if (range === "Today" || range === "2 Days") {
-      dateFormat = "hour";
-    }
-
-    data.forEach((item) => {
-      const date = new Date(item.createdAt);
-      let formattedDate;
-
-      if (dateFormat === "hour") {
-        formattedDate = `${date.getHours()}:00`;
-      } else {
-        formattedDate = `${date.getFullYear()}-${String(
-          date.getMonth() + 1
-        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-      }
-
-      processed.push({
-        name: formattedDate,
-        amount: item.amount,
-        TotalAmount: item.amount, // Assuming TotalAmount is the same as amount for simplicity
-      });
-    });
-
-    setProcessedData(processed);
   };
 
   useEffect(() => {
@@ -117,18 +96,73 @@ const ExpenseReport = () => {
     }
   }, [customSearch]);
 
-  useEffect(() => {
-    if (report.data && report.data.length > 0) {
-      preprocessData(report.data, title);
-    }
-  }, [report.data, title]);
-
   const viewReport = async () => {
     if (fromDate && toDate) {
       await ExpenseReportRequest(fromDate, toDate);
     } else {
       ErrorToast("Please, select a date range");
     }
+  };
+
+  const customViewReport = async () => {
+    const dayCount = calculateDaysBetweenDates(toDate, fromDate);
+    setRangeCount(dayCount);
+    setTitle("last " + dayCount + " days");
+    if (fromDate && toDate) {
+      await ExpenseReportRequest(fromDate, toDate);
+    } else {
+      ErrorToast("Please, select a date range");
+    }
+  };
+
+  const dateRange = subDays(toDate, rangeCount - 1);
+  let dateArray = [];
+  for (let i = 0; i < rangeCount; i++) {
+    dateArray.push(format(addDays(dateRange, i), "yyyy-MM-dd"));
+  }
+  let mergedData = dateArray.map((date) => {
+    if (report.data) {
+      let found = report.data.find((d) => d._id === date);
+      return {
+        _id: date,
+        total: found ? found.total : 0,
+      };
+    } else {
+      return null;
+    }
+  });
+
+  const exportData = (fileType) => {
+    const fileName = `Expense Report ${today}`;
+    if (mergedData.length > 0) {
+      let ReportData = [];
+      mergedData.map((item) => {
+        let listItem = {
+          Date: item["_id"],
+          Total: item["total"],
+        };
+        ReportData.push(listItem);
+      });
+      exportFromJSON({
+        data: ReportData,
+        fileName: fileName,
+        exportType: fileType,
+      });
+    }
+  };
+
+  const calculateDaysBetweenDates = (startDate, endDate) => {
+    // Convert the strings to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Calculate the difference in milliseconds
+    const diffInMs = start - end;
+
+    // Convert milliseconds to days
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    return diffInDays + 1;
   };
 
   return (
@@ -192,7 +226,7 @@ const ExpenseReport = () => {
               <div className="row">
                 <div className="col-4 p-2">
                   <button
-                    onClick={viewReport}
+                    onClick={customViewReport}
                     className="btn btn-sm my-3 btn-success"
                   >
                     View Report
@@ -207,13 +241,23 @@ const ExpenseReport = () => {
           <div className="col-12">
             <div className="card">
               <div className="card-body">
-                <div className="row">
-                  <div className="col">
-                    <h6>Total: {report.total[0].total} </h6>
-                    <button className="btn btn-sm my-2 btn-success">
+                <div className="row d-flex justify-content-between">
+                  <div className="col-md-6 col-lg-6 p-2">
+                    <span className="h6">
+                      Total Expense : {report.total[0].total}
+                    </span>
+                  </div>
+                  <div className="col-md-6 col-lg-6 p-2 text-end">
+                    <button
+                      onClick={exportData.bind(this, "csv")}
+                      className="btn btn-sm my-2 btn-success"
+                    >
                       Download CSV
                     </button>
-                    <button className="btn btn-sm my-2 ms-2 btn-success">
+                    <button
+                      onClick={exportData.bind(this, "xls")}
+                      className="btn btn-sm my-2 ms-2 btn-success"
+                    >
                       Download XLS
                     </button>
                   </div>
@@ -226,25 +270,24 @@ const ExpenseReport = () => {
         )}
       </div>
       <div className="row">
-        <div className="col-md-6 p-2">
+        <div className="col-md-12 p-2">
           <div className="card">
             <div className="card-body">
-              <span className="h6">Expense for {title}</span>
+              <span className="h6">Expense of {title}</span>
               <ResponsiveContainer className="mt-4" width="100%" height={200}>
                 <AreaChart
                   width={500}
                   height={200}
-                  data={processedData}
+                  data={mergedData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="_id" />
                   <YAxis />
-                  <Line type="monotone" dataKey="amount" stroke="#82ca9d" />
                   <Tooltip />
                   <Area
                     type="monotone"
-                    dataKey="TotalAmount"
+                    dataKey="total"
                     stroke="#CB0C9F"
                     fill="#CB0C9F"
                   />

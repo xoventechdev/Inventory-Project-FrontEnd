@@ -24,6 +24,7 @@ export const ExpenseReportRequest = async (from, to) => {
     ) {
       ReduxStore.dispatch(setExpenseReport(data.data.response[0]));
     } else {
+      ReduxStore.dispatch(setExpenseReport([]));
       ErrorToast("Expense Report data is not available");
     }
   } catch (error) {
